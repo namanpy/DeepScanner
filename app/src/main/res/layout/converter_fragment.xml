@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="spread"
+        app:layout_constraintBottom_toTopOf="@id/recycler"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/image_container"
+            android:layout_width="match_parent"
+            app:srcCompat="@drawable/ic_launcher_foreground"
+            android:layout_height="match_parent" />
+        <com.minip.scanner.customview.SelectView
+            android:id="@+id/selectview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+        </com.minip.scanner.customview.SelectView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        tools:listitem="@layout/imagedisplay"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/process_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="spread"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        >
+
+    </com.google.android.material.button.MaterialButton>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="660dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
