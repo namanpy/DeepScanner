@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -22,6 +24,7 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 class CameraCaptureFragment : Fragment(R.layout.camera_capture) {
 
@@ -32,6 +35,12 @@ class CameraCaptureFragment : Fragment(R.layout.camera_capture) {
 
     lateinit var previewView : PreviewView
     lateinit var camera_capture_button : Button
+    lateinit var capturePreview : ImageView
+    lateinit var imageCountView  : TextView
+
+    var imageCount = 0
+    var capturedImages : ArrayList<Uri> = ArrayList()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Request camera permissions
@@ -45,11 +54,12 @@ class CameraCaptureFragment : Fragment(R.layout.camera_capture) {
         // Set up the listener for take photo button
         previewView = view.findViewById(R.id.viewFinder)
         camera_capture_button = view.findViewById(R.id.camera_capture_button)
+        capturePreview = view.findViewById(R.id.capture_preview)
+        imageCountView = view.findViewById(R.id.image_count)
+
 
         camera_capture_button.setOnClickListener { takePhoto() }
-
-
-
+        capturePreview.setOnClickListener { if(imageCount  > 0) { finish() } }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -96,15 +106,21 @@ class CameraCaptureFragment : Fragment(R.layout.camera_capture) {
             override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                 val savedUri = Uri.fromFile(photoFile)
                 val msg = "Photo capture succeeded: $savedUri"
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                Log.d(TAG, msg)
-                var converterfragment : ConverterFragment = ConverterFragment();
+                imageCount++
+                imageCountView.setText(imageCount.toString());
+                capturedImages.add(savedUri)
+                capturePreview.setImageURI(savedUri)
 
-                converterfragment.singleImage(savedUri)
 
-                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragment_container, converterfragment).addToBackStack(null).commit()
             }
         })
+    }
+    private fun finish() {
+        var converterfragment : ConverterFragment = ConverterFragment();
+
+        converterfragment.multiImage(capturedImages)
+
+        requireActivity().supportFragmentManager.beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, converterfragment).addToBackStack(null).commit()
     }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())

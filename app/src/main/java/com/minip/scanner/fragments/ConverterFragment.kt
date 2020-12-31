@@ -26,17 +26,17 @@ import org.opencv.core.Mat
 
 
 class ImageSelectedCoordinates {
-    var x1 = 0f
-    var y1 =0f
+    var x1 = 30f
+    var y1 =30f
 
-    var x2 = 0f
-    var y2 = 0f
+    var x2 = 100f
+    var y2 = 30f
 
-    var x3 = 0f
-    var y3 = 0f
+    var x3 = 30f
+    var y3 = 100f
 
-    var x4 = 0f
-    var y4 = 0f
+    var x4 = 100f
+    var y4 = 100f
 }
 class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.OnImageClickListener, SelectView.OnSelectCoordinatesListener {
     var  images : ArrayList<Uri> = ArrayList()
@@ -67,11 +67,19 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
         button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 var i : Int = 0
+                var imageBitmap : ArrayList<Bitmap> = ArrayList()
                 for(i in 0..images.size-1) {
 
                     var image = images.get(i)
                     var coords = coordinates.get(i)
-
+                    var x1 = 0f
+                    var y1 = 0f
+                    var x2 = 0f
+                    var y2 = 0f
+                    var x3 = 0f
+                    var y3 = 0f
+                    var x4 = 0f
+                    var y4 = 0f
                     var bitmap : Bitmap = getCapturedImage(image);
                     bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 //
@@ -96,10 +104,10 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
 
                     var actualHeight = 0
                     var actualWidth  = 0
-                    var imageViewHeight = selectedImageView.getHeight()
-                    var imageViewWidth = selectedImageView.getWidth();
-                    var bitmapHeight = bitmap.height;
-                    var bitmapWidth = bitmap.width;
+                    val imageViewHeight = selectedImageView.getHeight()
+                    val imageViewWidth = selectedImageView.getWidth();
+                    val bitmapHeight = bitmap.height;
+                    val bitmapWidth = bitmap.width;
 
                     if (imageViewHeight * bitmapWidth <= imageViewWidth * bitmapHeight) {
                         actualWidth = bitmapWidth * imageViewHeight / bitmapHeight;
@@ -109,40 +117,41 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
                         actualWidth = imageViewWidth;
                     }
 
-                    Log.d("displayedImageHeight", actualHeight.toString())
-                    Log.d("imageViewHeight", imageViewHeight.toString())
-                    Log.d("bitmapHeight", bitmap.height.toString())
-                    Log.d("bitmapwidth", bitmap.height.toString())
-                    var displayedImageHeight = actualHeight
-                    var displayedImageWidth = actualWidth
-                    if(displayedImageWidth < imageViewWidth) {
-                        coords.x1 = ((coords.x1 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
-                        coords.x2 = ((coords.x2 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
-                        coords.x3 = ((coords.x3 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
-                        coords.x4 = ((coords.x4 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
+//                    Log.d("displayedImageHeight", actualHeight.toString())
+//                    Log.d("imageViewHeight", imageViewHeight.toString())
+//                    Log.d("bitmapHeight", bitmap.height.toString())
+//                    Log.d("bitmapwidth", bitmap.height.toString())
 
-                        coords.y1 = coords.y1/displayedImageHeight * bitmap.height
-                        coords.y2 = coords.y2/displayedImageHeight * bitmap.height
-                        coords.y3 = coords.y3/displayedImageHeight * bitmap.height
-                        coords.y4 = coords.y4/displayedImageHeight * bitmap.height
+                    val displayedImageHeight = actualHeight
+                    val displayedImageWidth = actualWidth
+                    if(displayedImageWidth < imageViewWidth) {
+                        x1 = ((coords.x1 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
+                        x2 = ((coords.x2 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
+                        x3 = ((coords.x3 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
+                        x4 = ((coords.x4 - ((imageViewWidth - displayedImageWidth) / 2f))/displayedImageWidth) * bitmap.width
+
+                        y1 = coords.y1/displayedImageHeight * bitmap.height
+                        y2 = coords.y2/displayedImageHeight * bitmap.height
+                        y3 = coords.y3/displayedImageHeight * bitmap.height
+                        y4 = coords.y4/displayedImageHeight * bitmap.height
                     }
                     if(displayedImageHeight < imageViewHeight) {
-                        coords.y1 = ((coords.y1 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
-                        coords.y2 = ((coords.y2 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
-                        coords.y3 = ((coords.y3 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
-                        coords.y4 = ((coords.y4 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
+                        y1 = ((coords.y1 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
+                        y2 = ((coords.y2 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
+                        y3 = ((coords.y3 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
+                        y4 = ((coords.y4 - ((imageViewHeight - displayedImageHeight) / 2f))/displayedImageHeight) * bitmap.height
 
-                        coords.x1 = coords.x1/displayedImageWidth * bitmap.width
-                        coords.x2 = coords.x2/displayedImageWidth * bitmap.width
-                        coords.x3 = coords.x3/displayedImageWidth * bitmap.width
-                        coords.x4 = coords.x4/displayedImageWidth * bitmap.width
+                        x1 = coords.x1/displayedImageWidth * bitmap.width
+                        x2 = coords.x2/displayedImageWidth * bitmap.width
+                        x3 = coords.x3/displayedImageWidth * bitmap.width
+                        x4 = coords.x4/displayedImageWidth * bitmap.width
                     }
 
 
 
 
 
-                    var imgMAT = Mat(bitmap.width, bitmap.height, CvType.CV_8UC1)
+                    val imgMAT = Mat(bitmap.width, bitmap.height, CvType.CV_8UC1)
                     Utils.bitmapToMat(bitmap , imgMAT)
 
                     Log.d("image is ", imgMAT.toString())
@@ -150,15 +159,18 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
                     val imageHeight = bitmap.height
                     val imageWidth = bitmap.width
 
-                    var calculated_dims = CalculateAspectRatio(coords.x1, coords.y1, coords.x2, coords.y2, coords.x3, coords.y3, coords.x4, coords.y4, actualWidth, actualHeight);
+                    val calculated_dims = CalculateAspectRatio(x1, y1, x2, y2, x3, y3, x4, y4, actualWidth, actualHeight);
 
-                    var newbitmap = GenerateWarpedImage("magicColor" ,imgMAT, calculated_dims.W, calculated_dims.H ,coords.x1, coords.y1, coords.x2, coords.y2, coords.x3, coords.y3, coords.x4, coords.y4).image;
+                    val newbitmap = GenerateWarpedImage("magicColor" ,imgMAT, calculated_dims.W, calculated_dims.H ,x1, y1, x2, y2, x3, y3, x4, y4).image;
 
-                    selectedImageView.setImageBitmap(newbitmap)
-                    Log.d("NEW BITMAP WIDTH ", newbitmap.width.toString())
-                    Log.d("NEW BITMAP HEIGHT ", newbitmap.height.toString())
+                    imageBitmap.add(newbitmap)
+
 
                 }
+
+                var filterSelectorFragment : FilterSelectorFragment = FilterSelectorFragment();
+                filterSelectorFragment.content(imageBitmap)
+                requireActivity().supportFragmentManager.beginTransaction().replace(R.id.fragment_container, filterSelectorFragment).commit()
             }
 
         })
@@ -172,17 +184,27 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
         coordinates.add(ImageSelectedCoordinates())
 
     }
+    fun multiImage(capturedImages : ArrayList<Uri>) {
+        images.addAll(capturedImages)
+        var i = 0
+        for(i in 0..images.size-1) {
+            coordinates.add(ImageSelectedCoordinates())
+        }
+
+    }
 
     override fun onImageClick(position: Int) {
         currentSelectedImage = position
         selectedImageView.setImageURI(images.get(currentSelectedImage))
-        selectView.setCurrentImageIndex(currentSelectedImage)
 
+        selectView.setCurrentImageIndex(currentSelectedImage)
+        val coords = coordinates.get(position)
+        selectView.setCoordinates(coords.x1, coords.y1, coords.x2, coords.y2, coords.x3, coords.y3, coords.x4, coords.y4)
     }
 
     override fun onSelectCoordinates(imageindex: Int, x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float) {
 
-        var coords  : ImageSelectedCoordinates = coordinates.get(currentSelectedImage)
+        val coords  : ImageSelectedCoordinates = coordinates.get(currentSelectedImage)
 
         coords.x1 = x1
         coords.x2 = x2

@@ -87,6 +87,17 @@ class SelectView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         return ( Math.pow((x - x1).toDouble(), 2.0)   + Math.pow((y - y1).toDouble(), 2.0)  ) < (pointRadius * pointRadius)
 
     }
+    fun setCoordinates( x1 : Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float, x4: Float, y4: Float) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.x3 = x3;
+        this.y3 = y3;
+        this.x4 = x4;
+        this.y4 = y4;
+        invalidate()
+    }
     override fun onTouchEvent(event: MotionEvent?) : Boolean {
         super.onTouchEvent(event)
 

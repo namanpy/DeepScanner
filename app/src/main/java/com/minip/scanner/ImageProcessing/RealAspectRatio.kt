@@ -65,7 +65,7 @@ class CalculateAspectRatio(x1 : Float, y1 : Float, x2 : Float, y2 : Float, x3 : 
 //        var A = Mat(3,3, CV_32FC1, ByteBuffer.wrap(byteArrayOf(f.toByte(),0,u0.toByte(),0,f.toByte(),v0.toByte(),0,0,1)))
 
         val u0 = width / 2.toDouble()
-        val v0 = width / 2.toDouble()
+        val v0 = height/ 2.toDouble()
         val m1x: Double = x1 - u0
         val m1y: Double = y1 - v0
         val m2x: Double = x2 - u0
@@ -86,7 +86,7 @@ class CalculateAspectRatio(x1 : Float, y1 : Float, x2 : Float, y2 : Float, x3 : 
         )
 
         Log.d("whRatio", whRatio.toString());
-        whRatio = Math.sqrt(Math.abs(whRatio))
+        whRatio = Math.sqrt((whRatio))
         if (k2 == 1.0 && k3 == 1.0) {
             whRatio = Math.sqrt(
                     (Math.pow(m2y - m1y, 2.0) + Math.pow(m2x - m1x, 2.0)) /
