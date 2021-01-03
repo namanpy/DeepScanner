@@ -1,7 +1,6 @@
 package com.minip.scanner.fragments
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -11,7 +10,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,19 +24,20 @@ import org.opencv.core.Mat
 
 
 class ImageSelectedCoordinates {
-    var x1 = 30f
-    var y1 =30f
+    var x1 = 0.05f
+    var y1 =0.05f
 
-    var x2 = 100f
-    var y2 = 30f
+    var x2 = 0.8f
+    var y2 = 0.05f
 
-    var x3 = 30f
-    var y3 = 100f
+    var x3 = 0.05f
+    var y3 = 0.8f
 
-    var x4 = 100f
-    var y4 = 100f
+    var x4 = 0.8f
+    var y4 = 0.8f
 }
 class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.OnImageClickListener, SelectView.OnSelectCoordinatesListener {
+    lateinit var listener : View.OnLayoutChangeListener
     var  images : ArrayList<Uri> = ArrayList()
     var  coordinates  : ArrayList<ImageSelectedCoordinates> = ArrayList()
     var  currentSelectedImage : Int = 0
@@ -46,6 +45,8 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
     lateinit var selectView: SelectView
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         var image_recycler_view :RecyclerView = requireActivity().findViewById(R.id.recycler)
         image_recycler_view.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false );
@@ -55,12 +56,97 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
         image_adapter.setUri(images)
 
         selectView = requireActivity().findViewById(R.id.selectview)
-
-        selectView._setOnSelectCoordinatesListener(this)
-
         selectedImageView = requireActivity().findViewById(R.id.image_container)
 
         selectedImageView.setImageURI(images.get(currentSelectedImage))
+
+
+        listener = object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View?,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
+            ) {
+                if(v != null) {
+
+
+                    for (i in 0 until coordinates.size) {
+
+                        coordinates[i].x1 *= v.width
+                        coordinates[i].x2 *= v.width
+                        coordinates[i].x3 *= v.width
+                        coordinates[i].x4 *= v.width
+
+                        coordinates[i].y1 *= v.height
+                        coordinates[i].y2 *= v.height
+                        coordinates[i].y3 *= v.height
+                        coordinates[i].y4 *= v.height
+
+                        var actualHeight = 0
+                        var actualWidth  = 0
+                        val imageViewHeight = selectedImageView.getHeight()
+                        val imageViewWidth = selectedImageView.getWidth();
+                        val bitmapHeight = selectedImageView.getDrawable().intrinsicHeight;
+                        val bitmapWidth = selectedImageView.getDrawable().intrinsicWidth;
+
+                        if (imageViewHeight * bitmapWidth <= imageViewWidth * bitmapHeight) {
+                            actualWidth = bitmapWidth * imageViewHeight / bitmapHeight;
+                            actualHeight = imageViewHeight;
+                        } else {
+                            actualHeight = bitmapHeight * imageViewWidth / bitmapWidth;
+                            actualWidth = imageViewWidth;
+                        }
+
+                        val displayedImageHeight = actualHeight
+                        val displayedImageWidth = actualWidth
+
+                        if(actualHeight < imageViewHeight) {
+                            coordinates[i].y1 -= (imageViewHeight - actualHeight) / 2f
+                            coordinates[i].y2 -= (imageViewHeight - actualHeight) / 2f
+                            coordinates[i].y3 -= (imageViewHeight - actualHeight) / 2f
+                            coordinates[i].y4 -= (imageViewHeight - actualHeight) / 2f
+                        }
+
+                        if(actualWidth < imageViewWidth) {
+                            coordinates[i].x1 -= (imageViewWidth - actualWidth) / 2f
+                            coordinates[i].x2 -= (imageViewWidth - actualWidth) / 2f
+                            coordinates[i].x3 -= (imageViewWidth - actualWidth) / 2f
+                            coordinates[i].x4 -= (imageViewWidth - actualWidth) / 2f
+                        }
+
+
+                    }
+
+
+                    selectView.setCoordinates(
+                        coordinates[0].x1,
+                        coordinates[0].y1,
+                        coordinates[0].x2,
+                        coordinates[0].y2,
+                        coordinates[0].x3,
+                        coordinates[0].y3,
+                        coordinates[0].x4,
+                        coordinates[0].y4
+                    )
+                    Log.d("LAYOUT " , "Changed")
+                    selectedImageView.removeOnLayoutChangeListener(this)
+                }
+            }
+        }
+
+
+        selectedImageView.addOnLayoutChangeListener(listener)
+
+
+        selectView._setOnSelectCoordinatesListener(this)
+
+
 
         var button : Button = requireActivity().findViewById(R.id.process_button)
 
@@ -82,25 +168,6 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
                     var y4 = 0f
                     var bitmap : Bitmap = getCapturedImage(image);
                     bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-//
-//
-//                    Log.d("imgRatio", imgRatio.toString())
-//                    var imageViewHeight = selectView.height;
-//                    var imageViewWidth = selectView.width;
-//                    var imgRatio : Float = (imageViewWidth.toFloat()/imageViewHeight.toFloat()).toFloat();
-//                    var displayedImageHeight = 0f
-//                    var displayedImageWidth = 0f
-//
-//                    if(imgRatio <= 1) {
-//                        displayedImageHeight = imageViewHeight.toFloat()
-//                        displayedImageWidth = displayedImageHeight * imgRatio
-//
-//                    } else {
-//                        displayedImageWidth = imageViewWidth.toFloat()
-//                        displayedImageHeight = displayedImageWidth * imgRatio
-//                    }
-//
-
 
                     var actualHeight = 0
                     var actualWidth  = 0
@@ -177,19 +244,38 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
 
 
     }
-
+    fun removeListener(view : View) {
+        view.removeOnLayoutChangeListener(listener)
+    }
 
     fun singleImage(imageUri : Uri) {
         images.add(imageUri)
         coordinates.add(ImageSelectedCoordinates())
 
     }
-    fun multiImage(capturedImages : ArrayList<Uri>) {
+    fun getCoordinates() {
+//        public static final MediaType JSON= MediaType.get("application/json; charset=utf-8");
+//
+//        OkHttpClient client = new OkHttpClient();
+//
+//        String post(String url, String json) throws IOException {
+//            RequestBody body = RequestBody.create(json, JSON);
+//            Request request = new Request.Builder()
+//                    .url(url)
+//                    .post(body)
+//                    .build();
+//            try (Response response = client.newCall(request).execute()) {
+//                return response.body().string();
+//            }
+//            }
+    }
+    fun multiImage(capturedImages : ArrayList<Uri>, coordinates: ArrayList<ImageSelectedCoordinates>) {
+
+        Log.d("MULTIIMAGE ", "CALLED")
         images.addAll(capturedImages)
-        var i = 0
-        for(i in 0..images.size-1) {
-            coordinates.add(ImageSelectedCoordinates())
-        }
+        this.coordinates.addAll(coordinates)
+        Log.d("TEstiNG ", this.coordinates[0].x1.toString())
+
 
     }
 
@@ -238,5 +324,9 @@ class ConverterFragment : Fragment(R.layout.converter_fragment) , ImageAdapter.O
 
         return bitmap
     }
+
+
+
+
 
 }

@@ -2,16 +2,39 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filterImageRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/filterRecycler"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/filter_image_display" />
 
-        tools:listitem="@layout/filter_image_display"
-        ></androidx.recyclerview.widget.RecyclerView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filterRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:layout_constraintBottom_toTopOf="@id/createPdf"
+        android:layout_marginBottom="5dp"
+        android:background="@color/design_default_color_background"
+        tools:listitem="@layout/imagedisplay">
 
 
+    </androidx.recyclerview.widget.RecyclerView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/createPdf"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="Create PDF"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/secondary"
+        android:background="@color/secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+    </com.google.android.material.button.MaterialButton>
 </androidx.constraintlayout.widget.ConstraintLayout>
